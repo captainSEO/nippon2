@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일본어회화 2학기 1회고사 마토메 모의평가</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --primary-light: #EEF2FF;
+            --success: #10B981;
+            --success-light: #ECFDF5;
+            --danger: #EF4444;
+            --danger-light: #FEF2F2;
+            --warning: #F59E0B;
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, "Hiragino Sans", "Meiryo", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 16px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 640px;
+            background: var(--card-bg);
+            border-radius: 28px;
+            box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+            padding: 40px 32px;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .start-badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .start-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.35;
+            margin-bottom: 12px;
+            word-break: keep-all;
+        }
+
+        .start-desc {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 32px;
+            word-break: keep-all;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 36px;
+        }
+
+        .info-box {
+            background: #F1F5F9;
+            padding: 16px 12px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .info-box span {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .info-box strong {
+            font-size: 1.15rem;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 16px 24px;
+            border-radius: 16px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: #F1F5F9;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: #E2E8F0;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .badge-mode {
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .badge-mode.main {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .badge-mode.review {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+
+        .progress-count {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: #E2E8F0;
+            border-radius: 999px;
+            margin-bottom: 28px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            border-radius: 999px;
+            transition: width 0.3s ease;
+        }
+
+        .quiz-question {
+            font-size: 1.2rem;
+            font-weight: 800;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            word-break: keep-all;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option-item {
+            background: #FFFFFF;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 16px 20px;
+            font-size: 0.98rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+            word-break: keep-all;
+            line-height: 1.4;
+        }
+
+        .option-item:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .option-item.correct {
+            border-color: var(--success);
+            background: var(--success-light);
+            color: #065F46;
+        }
+
+        .option-item.wrong {
+            border-color: var(--danger);
+            background: var(--danger-light);
+            color: #991B1B;
+        }
+
+        .option-item:disabled {
+            cursor: default;
+        }
+
+        .feedback-box {
+            display: none;
+            padding: 18px 20px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            line-height: 1.55;
+            margin-bottom: 24px;
+            word-break: keep-all;
+        }
+
+        .feedback-box.correct {
+            display: block;
+            background: var(--success-light);
+            border-left: 4px solid var(--success);
+            color: #065F46;
+        }
+
+        .feedback-box.wrong {
+            display: block;
+            background: var(--danger-light);
+            border-left: 4px solid var(--danger);
+            color: #991B1B;
+        }
+
+        .result-container {
+            text-align: center;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #4F46E5, #3730A3);
+            border-radius: 24px;
+            padding: 32px 24px;
+            color: white;
+            margin-bottom: 28px;
+        }
+
+        .score-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .score-val {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .accuracy-rate {
+            font-size: 1.1rem;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .stat-item {
+            background: #F8FAFC;
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 16px;
+        }
+
+        .stat-item span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .stat-item strong {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .stat-item.correct-stat strong { color: var(--success); }
+        .stat-item.wrong-stat strong { color: var(--danger); }
+
+        .btn-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- [1] 시작 화면 -->
+        <div id="screen-start" class="screen active">
+            <span class="start-badge">2학기 1회고사 마토메</span>
+            <h1 class="start-title">일본어회화 실전 모의평가</h1>
+            <p class="start-desc">인사·소개 표현, 취미와 선호, 핵심 어휘, 조사 문법, 종조사 및 수행평가 지문 등 핵심 50문항 라이브러리에서 엄선된 20문제가 무작위 출제됩니다.</p>
+            
+            <div class="info-grid">
+                <div class="info-box">
+                    <span>출제 문항</span>
+                    <strong>20문제</strong>
+                </div>
+                <div class="info-box">
+                    <span>문제 풀</span>
+                    <strong>50개</strong>
+                </div>
+                <div class="info-box">
+                    <span>오답 복습</span>
+                    <strong>지원</strong>
+                </div>
+            </div>
+
+            <button id="btn-start" class="btn btn-primary">모의평가 시작하기</button>
+        </div>
+
+        <!-- [2] 퀴즈 진행 화면 -->
+        <div id="screen-quiz" class="screen">
+            <div class="quiz-header">
+                <span id="quiz-mode-badge" class="badge-mode main">정규 시험</span>
+                <span id="quiz-counter" class="progress-count">01 / 20</span>
+            </div>
+            
+            <div class="progress-bar-bg">
+                <div id="progress-bar" class="progress-bar-fill"></div>
+            </div>
+
+            <h2 id="question-text" class="quiz-question">질문이 여기에 표시됩니다.</h2>
+
+            <div id="options-container" class="options-list"></div>
+
+            <div id="feedback-box" class="feedback-box"></div>
+
+            <button id="btn-next" class="btn btn-primary" style="display:none;">다음 문제</button>
+        </div>
+
+        <!-- [3] 결과 화면 -->
+        <div id="screen-result" class="screen result-container">
+            <h2 style="font-size:1.6rem; font-weight:800; margin-bottom:20px;">시험 결과 보고서</h2>
+            
+            <div class="score-card">
+                <div class="score-label">취득 점수</div>
+                <div id="result-score" class="score-val">100점</div>
+                <div id="result-accuracy" class="accuracy-rate">정답률 100% (20 / 20)</div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-item correct-stat">
+                    <span>정답 수</span>
+                    <strong id="stat-correct-count">20</strong>
+                </div>
+                <div class="stat-item wrong-stat">
+                    <span>오답 수</span>
+                    <strong id="stat-wrong-count">0</strong>
+                </div>
+            </div>
+
+            <div class="btn-stack">
+                <button id="btn-review-wrong" class="btn btn-warning">틀린 문제 다시 풀기</button>
+                <button id="btn-restart" class="btn btn-secondary">새로운 20문제 풀기 (50제 셔플)</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 전 범위 50문제 데이터 풀
+        const allQuestions = [
+            { q: "처음 만난 사람에게 건네는 인사 'はじめまして。'의 올바른 한국어 뜻은?", o: ["오랜만입니다.", "처음 뵙겠습니다.", "잘 부탁드립니다.", "잘 지내십니까?"], a: 1, e: "'はじめまして。'는 '처음 뵙겠습니다.'라는 첫인사입니다." },
+            { q: "상대방이 'どうぞよろしくおねがいします。'라고 했을 때, '저야말로 잘 부탁해요.'라는 맞받아치는 응답은?", o: ["こちらこそ、どうぞよろしく。", "おかげさまで、ありがとうございます。", "そうなんですか。", "おひさしぶりです。"], a: 0, e: "'こちらこそ、どうぞよろしく。'는 '저야말로 잘 부탁해요.'라는 뜻입니다." },
+            { q: "오랜만에 만난 사람에게 건네는 인사 'おひさしぶりです。'의 뜻은?", o: ["안녕히 계세요.", "감사합니다.", "오랜만입니다.", "축하합니다."], a: 2, e: "'おひさしぶりです。'는 '오랜만입니다.'라는 표현입니다." },
+            { q: "'おげんきですか。(잘 지내십니까?)'라는 물음에 '네, 덕분에요.'라고 답할 때 알맞은 표현은?", o: ["はい、おかげさまで。", "はい、こちらこそ。", "いいえ、ぜんぜん。", "はい、そうなんだ。"], a: 0, e: "안부에 감사하며 잘 지낸다고 답할 때는 'おかげさまで(덕분에요)'를 씁니다." },
+            { q: "상대방의 말에 대해 친구 사이에 가볍게 반말로 '그렇구나.'라고 맞장구칠 때 쓰는 표현은?", o: ["そうですか。", "そうなんですか。", "そうなんだ。", "おひさしぶり。"], a: 2, e: "'そうなんだ。'는 반말로 '그렇구나.'라는 뜻입니다." },
+            { q: "상대방의 이야기에 정중하게 '그래요? / 그렇습니까?'라고 반응하는 표현은?", o: ["そうなんですか。", "そうなんだ。", "はじめまして。", "こちらこそ。"], a: 0, e: "'そうなんですか。'는 '그래요? / 그렇습니까?'라는 확인 표현입니다." },
+            { q: "'이 아이는 친구 유진이입니다.'를 일본어로 바르게 나타낸 문장은?", o: ["このこは、ともだちのゆじんちゃんです。", "ゆじんちゃんもりゅうがくせいです。", "わたしのしゅみはゆじんちゃんです。", "ともだちとはなします。"], a: 0, e: "'このこは、ともだちの~です。'는 '이 아이는 친구 ~입니다.'라는 소개 문장입니다." },
+            { q: "'유진이도 유학생입니다.'를 일본어로 바르게 나타낸 것은?", o: ["ゆじんちゃんはりゅうがくせいです。", "ゆじんちゃんもりゅうがくせいです。", "ゆじんちゃんのりゅうがくせいです。", "ゆじんちゃんとちゅうがくせいです。"], a: 1, e: "'~도'를 나타내는 조사는 'も'이므로 'ゆじんちゃんも'가 맞습니다." },
+            { q: "상대방에게 '취미는 무엇입니까?'라고 물어볼 때 쓰는 표준 표현은?", o: ["どんなうたがすきですか。", "しゅみはなんですか。", "すぽーつがじょうずですか。", "なにをしますか。"], a: 1, e: "'しゅみはなんですか。'가 '취미는 무엇입니까?'라는 질문입니다." },
+            { q: "'나의 취미는 애니메이션을 보는 것입니다.'를 일본어로 바르게 표현한 것은?", o: ["わたしのしゅみはあにめをみるためです。", "わたしのしゅみはあにめをみることです。", "わたしのしゅみはあにめをみます。", "わたしはあにめがすきです。"], a: 1, e: "동사원형 뒤에 'こと'를 붙여 명사형(~하는 것)을 만듭니다 (みる + こと = 보는 것)." },
+            { q: "'어떤 노래를 좋아합니까?'를 일본어로 바르게 질문한 것은?", o: ["どんなうたがすきですか。", "うたがじょうずですか。", "うたをきくことかな。", "うたをうたいますか。"], a: 0, e: "'어떤'을 묻는 의문사는 'どんな'입니다." },
+            { q: "'일본 노래를 듣는 것이려나?'처럼 혼잣말하듯 조심스럽게 추측하는 어미 표현은?", o: ["にほんのうたをきくことかな。", "にほんのうたをききますよ。", "にほんのうたをうたうね。", "にほんのうたをきくためです。"], a: 0, e: "문장 끝의 '~かな'는 '~이려나?'라는 혼잣말이나 가벼운 의문을 나타냅니다." },
+            { q: "일본어 단어와 한국어 뜻의 연결이 옳지 않은 것은?", o: ["ともだち - 친구", "りゅうがくせい - 유학생", "れんしゅう - 연습", "ことし - 작년"], a: 3, e: "'ことし'는 '올해'를 뜻합니다. (작년은 きょねん)" },
+            { q: "'어린이'와 '어릴 때'를 뜻하는 단어 표현으로 알맞은 것은?", o: ["こども - こどものとき", "くらす - くらすのとき", "こうこう - こうこうのとき", "ごかぞく - かぞくのとき"], a: 0, e: "'こども'는 어린이이며, 'こどものとき'는 '어렸을 때'입니다." },
+            { q: "'강하다'라는 뜻을 가진 일본어 형용사는?", o: ["すきだ", "じょうずだ", "つよい", "おかげ"], a: 2, e: "'つよい'는 '강하다'라는 뜻입니다." },
+            { q: "'고등학교에 입학했습니다'에 들어갈 단어 '고등학교'와 '입학'은?", o: ["こうこう - にゅうがく", "くらす - ぶかつどう", "こうしえん - おうえん", "りょこう - べんきょう"], a: 0, e: "고등학교는 'こうこう', 입학은 'にゅうがく'입니다." },
+            { q: "'야구'와 '공부'를 일본어로 바르게 짝지은 것은?", o: ["やきゅう - べんきょう", "りょこう - れんしゅう", "おうえん - ぶかつどう", "くらす - しゅみ"], a: 0, e: "야구는 'やきゅう', 공부는 'べんきょう'입니다." },
+            { q: "'~했습니다'를 나타내는 정중한 과거형 어미는?", o: ["~します", "~しました", "~すること", "~するために"], a: 1, e: "'~しました'는 과거형 종결 표현인 '~했습니다'입니다." },
+            { q: "'듣다'를 뜻하는 일본어 기본형 동사는?", o: ["きく", "はなす", "いく", "みる"], a: 0, e: "'きく'는 듣다, 'みる'는 보다, 'いく'는 가다입니다." },
+            { q: "'노래하다'를 뜻하는 일본어 동사는?", o: ["する", "うたう", "いる", "れんしゅうする"], a: 1, e: "'うたう'는 '노래하다'입니다." },
+            { q: "'보다'라는 뜻의 일본어 동사는?", o: ["たべる", "おうえんする", "みる", "きく"], a: 2, e: "'みる'는 '보다'입니다." },
+            { q: "외래어 '피아노'의 올바른 히라가나 표기는?", o: ["ぴあの", "ばなな", "げーむ", "ろっく"], a: 0, e: "교재의 외래어 표기 목록에 따라 'ぴあの'로 표기합니다." },
+            { q: "외래어 '게임'과 '록(락 음악)'을 히라가나로 바르게 표기한 짝은?", o: ["げーむ - ろっく", "けーぽっぷ - じぇーぽっぷ", "あにめそんぐ - ぴあの", "すぽーつ - ぼーる"], a: 0, e: "게임은 'げーむ', 록은 'ろっく'입니다." },
+            { q: "외래어 '애니메이션 노래(애니송)'를 히라가나로 표기한 것은?", o: ["あにめそんぐ", "じぇーぽっぷ", "けーぽっぷ", "ろっくそんぐ"], a: 0, e: "애니메이션 노래는 'あにめそんぐ'입니다." },
+            { q: "'전혀'라는 뜻으로 부정형과 어울려 쓰이는 표현은?", o: ["ぜんぜん", "あまり", "とても", "すこし"], a: 0, e: "'ぜんぜん(전혀)'은 부정 표현과 호응하여 '전혀 ~않다'로 쓰입니다." },
+            { q: "'그다지, 별로'라는 뜻으로 부정형과 함께 쓰이는 정도 표현은?", o: ["ぜんぜん", "あまり", "まいにち", "ぜったい"], a: 1, e: "'あまり(그다지/별로)'는 부정형과 함께 쓰입니다." },
+            { q: "'매우, 아주'와 '조금'을 나타내는 단어 짝으로 올바른 것은?", o: ["とても - すこし", "ぜったい - まいにち", "ぜんぜん - あまり", "それで - でも"], a: 0, e: "'とても'는 매우/아주, 'すこし'는 조금입니다." },
+            { q: "'매일'과 '반드시(꼭)'를 뜻하는 단어의 올바른 짝은?", o: ["まいにち - ぜったい", "ことし - とき", "それで - でも", "あまり - すこし"], a: 0, e: "매일은 'まいにち', 꼭/반드시는 'ぜったい'입니다." },
+            { q: "'하지만'이라는 역접의 뜻을 나타내는 접속 표현은?", o: ["だから (그래서)", "でも (하지만)", "そして (그리고)", "それに (게다가)"], a: 1, e: "'でも'는 '하지만'입니다." },
+            { q: "앞선 내용에 이어 '그래서'라는 결과를 나타내는 접속 표현은?", o: ["それで (그래서)", "しかし (그러나)", "また (또/또한)", "それなら (그렇다면)"], a: 0, e: "'それで'는 '그래서'를 의미합니다." },
+            { q: "'~은/는'을 나타내며, 조사로 쓰일 때 [wa(와)]로 발음하는 글자는?", o: ["は", "の", "を", "が"], a: 0, e: "주격/제시 조사 'は'는 조사로 쓰일 때 '와'로 읽습니다." },
+            { q: "'나의 취미(わたし__しゅみ)'의 빈칸에 들어갈 소유의 조사는?", o: ["は", "の", "を", "も"], a: 1, e: "'~의'를 나타내는 조사는 'の'입니다." },
+            { q: "'노래를 듣습니다(うた__ききます)'의 빈칸에 알맞은 목적격 조사(~을/를)는?", o: ["を", "が", "で", "に"], a: 0, e: "'~을/를'을 나타내는 목적격 조사는 'を'입니다." },
+            { q: "'스포츠를 좋아합니다(すぽーつ__すきです)'의 빈칸에 알맞은 조사는?", o: ["が", "を", "で", "と"], a: 0, e: "일본어에서 'すき(좋아함)'의 대상 앞에는 원칙적으로 조사 'が'를 씁니다." },
+            { q: "'반에서 노래합니다(くらす__うたいます)'의 빈칸에 알맞은 장소 조사(~에서)는?", o: ["で", "に", "と", "から"], a: 0, e: "동작이 일어나는 장소(~에서)를 나타내는 조사는 'で'입니다." },
+            { q: "'친구와 이야기합니다(ともだち__はなします)'의 빈칸에 들어갈 조사(~와/과)는?", o: ["と", "も", "の", "で"], a: 0, e: "동반 대상(~와/과)을 나타내는 조사는 'と'입니다." },
+            { q: "'어렸을 때부터(こどものとき__)'의 빈칸에 들어갈 출발점 조사(~부터)는?", o: ["から", "まで", "とか", "に"], a: 0, e: "시작이나 출발점(~부터)을 나타내는 조사는 'から'입니다." },
+            { q: "'록이라든가(ろっく__)'처럼 열거를 나타내는 표현(~라든가)은?", o: ["とか", "から", "で", "と"], a: 0, e: "'~とか'는 '~라든가'라는 열거 조사입니다." },
+            { q: "'노래를 잘합니다.'를 일본어로 바르게 나타낸 것은?", o: ["うたが じょうずです。", "うたが すきです。", "うたが じょうずじゃないです。", "うたを ききます。"], a: 0, e: "'~을 잘합니다'는 '~が じょうずです。'라고 합니다." },
+            { q: "'스포츠를 좋아하지 않습니다.'를 일본어로 바르게 표현한 문장은?", o: ["すぽーつがすきじゃないです。", "すぽーつがじょうずじゃないです。", "すぽーつがあまりすきです。", "すぽーつがぜんぜんすきです。"], a: 0, e: "'~하지 않습니다 / ~이 아닙니다'의 부정형은 '~じゃないです'를 씁니다." },
+           { q: "'요리를 전혀 잘하지 못합니다.'를 일본어로 바르게 나타낸 것은?", o: ["りょうりが ぜんぜん じょうずじゃないです。", "りょうりが あまり じょうずじゃないです。", "りょうりが すこし じょうずです。", "りょうりが とても じょうずです。"], a: 0, e: "'ぜんぜん ~ じゃないです'는 '전혀 ~하지 못합니다'입니다." },
+            { q: "'게임을 그다지 좋아하지 않습니다.'의 올바른 일본어 표현은?", o: ["げーむがあまりすきじゃないです。", "げーむがぜんぜんすきじゃないです。", "げーむがすこしすきです。", "げーむがとてもすきじゃないです。"], a: 0, e: "'あまり ~ じゃないです'는 '그다지 좋아하지 않습니다'입니다." },
+            { q: "동사 뒤에 붙어 '~하는 것'이라는 명사 구문을 만드는 공식은?", o: ["동사원형 + こと", "동사원형 + とき", "동사원형 + から", "동사원형 + じゃない"], a: 0, e: "'동사원형 + こと'는 '~하는 것'입니다 (예: みること = 보는 것)." },
+            { q: "동사 뒤에 붙어 '~하기 위해(서)'라는 목적을 나타내는 공식은?", o: ["동사원형 + ために", "동사원형 + そうだ", "동사원형 + ながら", "동사원형 + すぎる"], a: 0, e: "'동사원형 + ために'는 목적(~하기 위해서)을 나타냅니다." },
+            { q: "'잘 부르기 위해, 연습하고 있습니다.'를 일본어로 바르게 영작한 것은?", o: ["じょうずに うたうために、れんしゅうしています。", "じょうずに うたうこと、れんしゅうします。", "じょうずに うたうから、れんしゅうです。", "じょうずに うたいました。"], a: 0, e: "'うたう(노래하다) + ために(위해)' = うたうために입니다." },
+            { q: "일본 학교에서 방과 후 동아리 활동을 하지 않고 곧장 하교하는 학생 집단을 이르는 말은?", o: ["きたくぶ (귀가부)", "おうえんぶ (응원부)", "やきゅうぶ (야구부)", "ぶかつどう (동아리활동)"], a: 0, e: "'きたくぶ(귀가부)'는 동아리를 하지 않고 바로 집으로 가는 것을 뜻합니다." },
+            { q: "'일본 전국 고교 야구 대회'를 상징하는 명칭은?", o: ["こうしえん (고시엔)", "にゅうがく", "ぶかつどう", "こうこう"], a: 0, e: "일본 전국 고교 야구 대회를 통칭 'こうしえん(고시엔)'이라 부릅니다." },
+            { q: "음식 어휘 중 '쌀'과 '달걀'을 뜻하는 단어의 짝은?", o: ["こめ - たまご", "むぎ - すもも", "もも - なま", "こめ - むぎ"], a: 0, e: "쌀은 'こめ', 달걀은 'たまご'입니다." },
+            { q: "동사 'いく(가다)'와 'いる(있다)'의 정중형(존댓말) 짝으로 옳은 것은?", o: ["いきます - います", "します - いきます", "いきます - します", "います - いきます"], a: 0, e: "いく → いきます, いる → います 입니다." },
+            { q: "상대방이 잘 모르는 내용을 알려주거나 강조할 때 문장 끝에 쓰는 종조사는?", o: ["よ", "ね", "か", "の"], a: 0, e: "새로운 정보 알려주기나 강조에는 종조사 'よ'를 사용합니다." }
+        ];
+
+        // 상태 변수
+        let currentQuizSet = [];
+        let currentIndex = 0;
+        let score = 0;
+        let userWrongAnswers = [];
+        let isReviewMode = false;
+        let hasAnswered = false;
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(screenId);
+            if (target) target.classList.add('active');
+        }
+
+        function shuffle(arr) {
+            const temp = [...arr];
+            for (let i = temp.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [temp[i], temp[j]] = [temp[j], temp[i]];
+            }
+            return temp;
+        }
+
+        function startMainQuiz() {
+            isReviewMode = false;
+            userWrongAnswers = [];
+            currentQuizSet = shuffle(allQuestions).slice(0, 20);
+            currentIndex = 0;
+            score = 0;
+
+            const modeBadge = document.getElementById('quiz-mode-badge');
+            modeBadge.innerText = "정규 모의평가";
+            modeBadge.className = "badge-mode main";
+
+            showScreen('screen-quiz');
+            renderQuestion();
+        }
+
+        function startWrongReview() {
+            if (userWrongAnswers.length === 0) return;
+            
+            isReviewMode = true;
+            currentQuizSet = [...userWrongAnswers];
+            currentIndex = 0;
+            userWrongAnswers = [];
+
+            const modeBadge = document.getElementById('quiz-mode-badge');
+            modeBadge.innerText = "오답 집중 클리닉";
+            modeBadge.className = "badge-mode review";
+
+            showScreen('screen-quiz');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            hasAnswered = false;
+            const qData = currentQuizSet[currentIndex];
+            const total = currentQuizSet.length;
+
+            document.getElementById('quiz-counter').innerText = `${String(currentIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+            document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+            document.getElementById('question-text').innerText = `${currentIndex + 1}. ${qData.q}`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            qData.o.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-item';
+                btn.innerText = optText;
+                btn.onclick = function() { selectOption(idx, btn); };
+                optionsContainer.appendChild(btn);
+            });
+
+            const feedbackBox = document.getElementById('feedback-box');
+            feedbackBox.className = 'feedback-box';
+            feedbackBox.style.display = 'none';
+            
+            const nextBtn = document.getElementById('btn-next');
+            nextBtn.style.display = 'none';
+            nextBtn.innerText = (currentIndex === total - 1) ? "결과 확인하기" : "다음 문제";
+        }
+
+        function selectOption(selectedIndex, btnElement) {
+            if (hasAnswered) return;
+            hasAnswered = true;
+
+            const qData = currentQuizSet[currentIndex];
+            const buttons = document.querySelectorAll('.option-item');
+            const feedbackBox = document.getElementById('feedback-box');
+            const nextBtn = document.getElementById('btn-next');
+
+            buttons.forEach(b => b.disabled = true);
+
+            if (selectedIndex === qData.a) {
+                btnElement.classList.add('correct');
+                feedbackBox.innerHTML = `<strong>정답입니다! (正解)</strong><br>${qData.e}`;
+                feedbackBox.className = 'feedback-box correct';
+                if (!isReviewMode) score++;
+            } else {
+                btnElement.classList.add('wrong');
+                if (buttons[qData.a]) buttons[qData.a].classList.add('correct');
+                feedbackBox.innerHTML = `<strong>오답입니다.</strong><br>${qData.e}`;
+                feedbackBox.className = 'feedback-box wrong';
+                
+                if (!userWrongAnswers.some(item => item.q === qData.q)) {
+                    userWrongAnswers.push(qData);
+                }
+            }
+
+            nextBtn.style.display = 'block';
+        }
+
+        function handleNextStep() {
+            currentIndex++;
+            if (currentIndex < currentQuizSet.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            showScreen('screen-result');
+
+            const total = isReviewMode ? currentQuizSet.length : 20;
+            const correctCount = isReviewMode ? (total - userWrongAnswers.length) : score;
+            const wrongCount = isReviewMode ? userWrongAnswers.length : (20 - score);
+            const accuracy = Math.round((correctCount / total) * 100);
+
+            document.getElementById('result-score').innerText = isReviewMode ? `${accuracy}점` : `${score * 5}점`;
+            document.getElementById('result-accuracy').innerText = `정답률 ${accuracy}% (${correctCount} / ${total})`;
+            document.getElementById('stat-correct-count').innerText = correctCount;
+            document.getElementById('stat-wrong-count').innerText = wrongCount;
+
+            const reviewBtn = document.getElementById('btn-review-wrong');
+            if (userWrongAnswers.length > 0) {
+                reviewBtn.style.display = 'block';
+                reviewBtn.innerText = `틀린 문제 다시 풀기 (${userWrongAnswers.length}문제)`;
+            } else {
+                reviewBtn.style.display = 'none';
+            }
+        }
+
+        // DOM이 준비되었을 때 이벤트 리스너를 안전하게 바인딩
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('btn-start').addEventListener('click', startMainQuiz);
+            document.getElementById('btn-next').addEventListener('click', handleNextStep);
+            document.getElementById('btn-review-wrong').addEventListener('click', startWrongReview);
+            document.getElementById('btn-restart').addEventListener('click', startMainQuiz);
+        });
+    </script>
+</body>
+</html>
